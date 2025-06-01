@@ -1,0 +1,19 @@
+{
+  "name": "hybrid",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:publish": "pnpm --filter @hybrid/publish-platform dev",
+    "dev:admin": "pnpm --filter @hybrid/admin-service dev",
+    "build:sdk": "pnpm --filter @hybrid/web-sdk build",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.0.0",
+    "@commitlint/config-conventional": "^17.0.0",
+    "husky": "^8.0.0"
+  }
+}
