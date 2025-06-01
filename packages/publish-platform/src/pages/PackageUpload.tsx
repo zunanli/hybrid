@@ -5,7 +5,7 @@ import { Form, Input, Upload, Button, message, Card } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { uploadPackage } from '../store/packagesSlice';
 import type { AppDispatch } from '../store';
-import type { UploadFile } from 'antd/es/upload/interface';
+import type { RcFile, UploadFile } from 'antd/es/upload/interface';
 
 const PackageUpload: React.FC = () => {
   const [form] = Form.useForm();
@@ -20,7 +20,7 @@ const PackageUpload: React.FC = () => {
     }
 
     const formData = new FormData();
-    formData.append('file', fileList[0].originFileObj as Blob);
+    formData.append('file', fileList[0] as unknown as File);
     formData.append('name', values.name);
     formData.append('version', values.version);
     formData.append('description', values.description);
@@ -34,9 +34,22 @@ const PackageUpload: React.FC = () => {
     }
   };
 
-  const beforeUpload = (file: UploadFile) => {
-    setFileList([file]);
+  const beforeUpload = (file: RcFile) => {
+    if (!file.type && !file.name.endsWith('.zip')) {
+      message.error('只能上传 ZIP 文件！');
+      return false;
+    }
+    if (file.size > 50 * 1024 * 1024) {
+      message.error('文件大小不能超过 50MB！');
+      return false;
+    }
+    setFileList([file as UploadFile]);
     return false;
+  };
+
+  const onRemove = () => {
+    setFileList([]);
+    return true;
   };
 
   return (
@@ -79,8 +92,9 @@ const PackageUpload: React.FC = () => {
           <Upload
             beforeUpload={beforeUpload}
             fileList={fileList}
-            onRemove={() => setFileList([])}
+            onRemove={onRemove}
             accept=".zip"
+            maxCount={1}
           >
             <Button icon={<UploadOutlined />}>选择文件</Button>
           </Upload>

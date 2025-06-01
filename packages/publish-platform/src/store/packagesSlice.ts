@@ -16,7 +16,15 @@ export const fetchPackages = createAsyncThunk(
 export const uploadPackage = createAsyncThunk(
   'packages/uploadPackage',
   async (formData: FormData) => {
-    const response = await axios.post<ApiResponse<PackageMeta>>(`${API_BASE_URL}/api/packages/upload`, formData);
+    const response = await axios.post<ApiResponse<PackageMeta>>(
+      `${API_BASE_URL}/api/packages/upload`, 
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
     return response.data.data;
   }
 );
