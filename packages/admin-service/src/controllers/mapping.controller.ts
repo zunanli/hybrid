@@ -3,6 +3,7 @@ import { AppDataSource } from '../data-source';
 import { Mapping } from '../entities/mapping.entity';
 import { logger } from '../utils/logger';
 import { DeepPartial } from 'typeorm';
+import { Platform } from '../entities/version.entity';
 
 const mappingRepository = AppDataSource.getRepository(Mapping);
 
@@ -142,6 +143,65 @@ export class MappingController {
       res.status(500).json({
         code: 500,
         message: 'Failed to delete mapping',
+        data: null,
+      });
+    }
+  }
+
+  // 根据平台和版本获取离线包
+  async findByPlatformAndVersion(req: Request, res: Response) {
+    try {
+      const { platform, version } = req.query;
+
+      if (!platform || !version) {
+        return res.status(400).json({
+          code: 400,
+          message: 'Platform and version are required',
+          data: null,
+        });
+      }
+
+      if (!Object.values(Platform).includes(platform as Platform)) {
+        return res.status(400).json({
+          code: 400,
+          message: 'Invalid platform',
+          data: null,
+        });
+      }
+
+      const mapping = await mappingRepository
+        .createQueryBuilder('mapping')
+        .leftJoinAndSelect('mapping.appVersion', 'appVersion')
+        .leftJoinAndSelect('mapping.package', 'package')
+        .where('appVersion.platform = :platform', { platform })
+        .andWhere('appVersion.version = :version', { version })
+        .getOne();
+
+      if (!mapping) {
+        return res.status(404).json({
+          code: 404,
+          message: 'No package found for the specified platform and version',
+          data: null,
+        });
+      }
+
+      res.json({
+        code: 0,
+        message: 'success',
+        data: {
+          packageId: mapping.package.id,
+          packageName: mapping.package.name,
+          packageVersion: mapping.package.version,
+          packageUrl: mapping.package.url,
+          packageHash: mapping.package.hash,
+          packageSize: mapping.package.size,
+        },
+      });
+    } catch (error) {
+      logger.error('Failed to fetch package by platform and version:', error);
+      res.status(500).json({
+        code: 500,
+        message: 'Failed to fetch package',
         data: null,
       });
     }

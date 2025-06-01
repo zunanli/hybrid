@@ -35,4 +35,7 @@ router.get('/mappings/:id', mappingController.findOne.bind(mappingController) as
 router.put('/mappings/:id', mappingController.update.bind(mappingController) as RequestHandler);
 router.delete('/mappings/:id', mappingController.delete.bind(mappingController) as RequestHandler);
 
+// Native API routes
+router.get('/native/packages', mappingController.findByPlatformAndVersion.bind(mappingController) as RequestHandler);
+
 export default router;
