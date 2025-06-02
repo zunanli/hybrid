@@ -78,3 +78,5 @@
 {"level":"info","message":"Server is running on port 3008","timestamp":"2025-06-01T15:01:57.913Z"}
 {"level":"info","message":"Database connected successfully","timestamp":"2025-06-01T15:02:08.140Z"}
 {"level":"info","message":"Server is running on port 3008","timestamp":"2025-06-01T15:02:08.142Z"}
+{"level":"info","message":"Database connected successfully","timestamp":"2025-06-02T04:22:14.493Z"}
+{"level":"info","message":"Server is running on port 3008","timestamp":"2025-06-02T04:22:14.495Z"}
