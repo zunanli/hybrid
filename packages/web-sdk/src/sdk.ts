@@ -1,6 +1,13 @@
 import { PackageInfo, SDKConfig } from './types';
 import { parseQuery, checkWhiteScreen, isHotfixRequired } from './utils';
 
+// 使用方法：
+// const sdk = HybridSDK.getInstance({
+// apiUrl: 'http://localhost:3008',
+// platform: 'IOS',
+// version: '1.0.0',
+// });
+// const packageInfo = await sdk.init();
 export class HybridSDK {
   private static instance: HybridSDK;
 
